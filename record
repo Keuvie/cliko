@@ -19,7 +19,7 @@ local_cast() {
     local uuid=${1:?UUID is not set}
 
     local file_name=./www/${uuid}.html
-    CASTDATA="$(cat recordings/${uuid} | base64 | tr -d '\n')" envsubst < www/local.html > ${file_name}
+    sed 's/CASTDATA/'$(cat recordings/${uuid} | base64 | tr -d '\n')'/g' < ./www/local.html > ${file_name}
     echo "${file_name}"
 }
 
