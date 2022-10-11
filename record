@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -u
+set -e
+set -o pipefail
+
+source ./.env
+
+prepare_cast() {
+    touch ./recordings/${1}
+    realpath ./recordings/${1}
+}
+
+upload_cast() {
+    local uuid=${1:?UUID is not set}
+
+    local url=${CAST_DOMAIN}/?uuid=${uuid}
+
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentityFile="${SSH_KEY_PATH:?}" \
+        ./recordings/${uuid} ${REMOTE_USER:?}@${REMOTE_HOST:?}:${REMOTE_RECORDINGS_DIRECTORY:?}
+    echo "${url}"
+}
+
+local_cast() {
+    local uuid=${1:?UUID is not set}
+
+    local file_name=./www/${uuid}.html
+    CASTDATA="$(cat recordings/${uuid} | base64 | tr -d '\n')" envsubst < www/local.html > ${file_name}
+    echo "${file_name}"
+}
+
+main() {
+    local distro=${1}
+
+    if ! docker inspect cliko:${distro} >&/dev/null; then
+        echo "${distro} not available."
+        exit 1
+    fi
+
+    local uuid=$(cat /proc/sys/kernel/random/uuid)
+    local castfile=$(prepare_cast ${uuid})
+
+    docker run --rm -v "${castfile}:/cast" -h ${distro} --env RECORD=true -it cliko:${distro}
+
+    echo "Upload or save local?"
+    select ul in "Upload" "Local"; do
+        case $ul in
+        Upload)
+            entry=$(upload_cast ${uuid})
+            break
+            ;;
+        Local)
+            entry=$(local_cast ${uuid})
+            break
+            ;;
+        esac
+    done
+
+    echo -e "\n\n"
+    echo "######### Cast available at:"
+    echo "${entry}"
+
+}
+
+main "${@}"

@@ -1,0 +1,7 @@
+FROM debian:latest
+ENV SHELL=/bin/sh
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install asciinema --yes
+
+COPY entrypoint.sh /entrypoint.sh
+CMD [ "sh", "-c" ,"/entrypoint.sh" ]

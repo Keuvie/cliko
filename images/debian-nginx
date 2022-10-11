@@ -1,0 +1,4 @@
+FROM cliko:debian-base
+ENV SHELL=/bin/bash
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install bash nginx --yes

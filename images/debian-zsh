@@ -1,0 +1,4 @@
+FROM cliko:debian-base
+ENV SHELL=/bin/zsh
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install zsh --yes

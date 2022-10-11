@@ -1,0 +1,3 @@
+FROM cliko:alpine-base
+ENV SHELL=/usr/bin/python3
+RUN apk add --update python3

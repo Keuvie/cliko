@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css"
+    href="https://unpkg.com/asciinema-player@3.0.0-rc.1/dist/bundle/asciinema-player.css" />
+
+  <title>COMMAND LINE INTERFACE KO</title>
+</head>
+<main class="container">
+  <div id="player"></div>
+</main>
+
+<script src="https://unpkg.com/asciinema-player@3.0.0-rc.1/dist/bundle/asciinema-player.min.js"></script>
+<script>
+  AsciinemaPlayer.create(
+    'data:text/plain;base64,${CASTDATA}',
+    document.getElementById('player'),
+    { cols: 116, rows: 29 }
+  );
+</script>
+
+</body>
+
+</html>

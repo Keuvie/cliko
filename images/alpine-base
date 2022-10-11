@@ -1,0 +1,7 @@
+FROM alpine
+ENV SHELL=/bin/sh
+RUN apk add --update asciinema
+
+COPY entrypoint.sh /entrypoint.sh
+CMD [ "sh", "-c", "/entrypoint.sh" ]
+

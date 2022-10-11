@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -u
+set -e
+set -o pipefail
+
+main() {
+  local distro=${1}
+
+  if ! docker inspect cliko:${distro} >& /dev/null; then
+    echo "${distro} not available."; 
+    exit 1; 
+  fi
+
+  docker run --rm -h ${distro} -it cliko:${distro}
+}
+
+main "${@}"

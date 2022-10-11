@@ -1,0 +1,3 @@
+FROM cliko:alpine-base
+ENV SHELL=/bin/bash
+RUN apk add --update bash

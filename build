@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -u
+set -e
+set -o pipefail
+
+list_base_images() {
+  find images/ -type f | sed -nr 's/images\/(.+)-base/\1/p'
+}
+
+list_child_images() {
+  find images/ -type f -name "${1:?Variant not set}-*" -not -name '*-base' | sed -nr 's/images\/'${1}'-(.+)/\1/p'
+}
+
+source ./.env
+
+main() {
+  for base in $(list_base_images); do
+    echo "Building base image: ${base}"
+    docker build -t cliko:${base}-base -f ./images/${base}-base ./context/
+
+    for image in $(list_child_images ${base}); do
+      echo "Building image for: ${image}"
+      docker build -t cliko:${base}-${image} - <./images/${base}-${image}
+    done
+  done
+}
+
+main "${@}"
