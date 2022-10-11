@@ -1,0 +1,6 @@
+FROM docker:stable-dind
+ENV SHELL=/bin/bash
+RUN apk add --update asciinema bash
+
+COPY docker-entrypoint.sh /entrypoint.sh
+CMD [ "sh", "-c", "/entrypoint.sh" ]
