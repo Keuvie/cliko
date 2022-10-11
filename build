@@ -4,14 +4,13 @@ set -e
 set -o pipefail
 
 list_base_images() {
-  find images/ -type f | sed -nr 's/images\/(.+)-base/\1/p'
+  find images -type f | sed -nr 's/images\/(.+)-base/\1/p'
 }
 
 list_child_images() {
-  find images/ -type f -name "${1:?Variant not set}-*" -not -name '*-base' | sed -nr 's/images\/'${1}'-(.+)/\1/p'
+  local base=${1:?Base not set}
+  find images -type f -name "${base}-*" -not -name '*-base' | sed -nr 's/images\/'${base}'-(.+)/\1/p'
 }
-
-source ./.env
 
 main() {
   for base in $(list_base_images); do
