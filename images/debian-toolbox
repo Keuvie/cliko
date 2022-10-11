@@ -1,5 +1,4 @@
 FROM cliko:debian-base
 ENV SHELL=/bin/bash
-ENV DOCKER_HOSTNAME=debian-toolbox
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install bash dnsutils curl whois nmap --yes

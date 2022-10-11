@@ -3,14 +3,9 @@ set -u
 set -e
 set -o pipefail
 
-source ./.env
-
-prepare_cast() {
-    touch ./recordings/${1}
-    realpath ./recordings/${1}
-}
-
 upload_cast() {
+    source ./.env
+
     local uuid=${1:?UUID is not set}
 
     local url=${CAST_DOMAIN}/?uuid=${uuid}
@@ -31,15 +26,23 @@ local_cast() {
 main() {
     local distro=${1}
 
-    if ! docker inspect cliko:${distro} >&/dev/null; then
+    if ! docker inspect cliko:${distro} >& /dev/null; then
         echo "${distro} not available."
         exit 1
     fi
 
-    local uuid=$(cat /proc/sys/kernel/random/uuid)
-    local castfile=$(prepare_cast ${uuid})
+    local uuid=$(date +%Y%m%d-%H%M)
 
-    docker run --rm -v "${castfile}:/cast" -h ${distro} --env RECORD=true -it cliko:${distro}
+    if command uuidgen >& /dev/null; then
+        uuid=$(uuidgen | tr "[A-Z]" "[a-z]")
+    elif [ -f /proc/sys/kernel/random/uuid ]; then
+        uuid=$(cat /proc/sys/kernel/random/uuid)
+    fi
+
+    local castfile=recordings/${uuid}
+    touch ${castfile}
+
+    docker run --rm -v "${PWD}/${castfile}:/cast" -v "${PWD}/share:/share" -h ${distro} --env RECORD=true -it cliko:${distro}
 
     echo "Upload or save local?"
     select ul in "Upload" "Local"; do
