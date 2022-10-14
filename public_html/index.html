@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/assets/asciinema-player.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <title>COMMAND LINE INTERFACE KO</title>
+</head>
+<main class="container">
+    <div>
+        <form>
+            <div>
+                <label for="ap_theme">Theme:</label>
+                <select id="ap_theme">
+                    <option value="asciinema" selected="">asciinema</option>
+                    <option value="monokai">monokai</option>
+                    <option value="tango">tango</option>
+                    <option value="solarized-dark">solarized-dark</option>
+                    <option value="solarized-light">solarized-light</option>
+                </select>
+            </div>
+            <div>
+                <input type="checkbox" id="ap_autoplay" name="autoplay">
+                <label for="ap_autoplay">Autoplay</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ap_loop" name="loop">
+                <label for="ap_loop">Loop</label>
+            </div>
+        </form>
+    </div>
+    <h1 id="title"></h1>
+    <div id="player"></div>
+</main>
+
+<script src="/assets/asciinema-player.min.js"></script>
+
+</body>
+
+</html>
