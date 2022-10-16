@@ -1,58 +1,63 @@
+/*jshint esversion: 6 */
+
 const uuid = window.location.hash.substr(1);
 
-var ap_theme;
-const ap_themeElem = document.getElementById('ap_theme');
+const paramString = document.currentScript.src.split("?")[1];
+const queryString = new URLSearchParams(paramString);
+const version = queryString.get("version");
 
-var ap_loop;
-const ap_loopElem = document.getElementById('ap_loop');
+const populateStorage = () => {
+    localStorage.clear();
+    localStorage.setItem("version", version);
+    localStorage.setItem("asciinema", JSON.stringify({
+        autoplay: false,
+        loop: false,
+        speed: 1,
+        idletimelimit: 2,
+        theme: "asciinema"
+    }));
+};
 
-var ap_autoplay;
-const ap_autoplayElem = document.getElementById('ap_autoplay');
+const setFormValues = (formID) => {
+    var formElem = document.getElementById(formID);
+    var values = JSON.parse(localStorage.getItem(formElem.getAttribute("data-name")));
 
-function populateStorage() {
-    localStorage.setItem('ap_theme', document.getElementById('ap_theme').value);
-    localStorage.setItem('ap_loop', document.getElementById('ap_loop').checked);
-    localStorage.setItem('ap_autoplay', document.getElementById('ap_autoplay').checked);
-
-    setStyles();
-    location.reload();
-}
-
-function setStyles() {
-    ap_theme = localStorage.getItem('ap_theme');
-    ap_loop = localStorage.getItem('ap_loop');
-    ap_autoplay = localStorage.getItem('ap_autoplay');
-    ap_themeElem.value = ap_theme;
-    ap_loopElem.value = ap_loop;
-    ap_autoplayElem.value = ap_autoplay;
-}
-
-
-if (!localStorage.getItem('ap_theme')) {
-    populateStorage();
-} else {
-    setStyles();
-}
-
-ap_themeElem.onchange = populateStorage;
-ap_loopElem.onchange = populateStorage;
-ap_autoplayElem.onchange = populateStorage;
-console.log(ap_loop)
-
-if (uuid) AsciinemaPlayer.create(
-    ['casts', uuid].join('/'),
-    document.getElementById('player'),
-    {
-        autoPlay: false
-        , preload: true
-        , loop: ap_loop
-        , startAt: 0
-        , speed: 1
-        , idleTimeLimit: 2
-        , theme: ap_theme
-        , poster: "data:text/plain,Poster!"
-        , fit: "width"
-        , terminalFontSize: "small"
-        , terminalLineHeight: 1.33333333
+    for (var [key, value] of Object.entries(values)) {
+        var formItem = formElem.querySelector("[name=" + key + "]");
+        if (formItem.type == "checkbox") {
+            formItem.checked = value;
+        } else {
+            formItem.value = value;
+        }
     }
-);
+};
+
+if (!localStorage.getItem("version") || (localStorage.getItem("version") != version)) {
+    populateStorage();
+    setFormValues("form-settings");
+} else {
+    setFormValues("form-settings");
+}
+
+const isModalOpen = (e) => !(!e.hasAttribute("open") || "false" == e.getAttribute("open"));
+
+const toggleModal = (e) => {
+    e.preventDefault();
+    e = document.getElementById(e.currentTarget.getAttribute("data-target"));
+    e.setAttribute("open", !isModalOpen(e));
+};
+
+const saveForm = (e) => {
+    var formData = new FormData(e);
+    localStorage.setItem(e.getAttribute("data-name"), JSON.stringify(Object.fromEntries(formData)));
+};
+
+const create_player = (url) => {
+    const player = AsciinemaPlayer.create(
+        url,
+        document.getElementById("player"),
+        JSON.parse(localStorage.getItem("asciinema")) || {}
+    );
+};
+
+if (uuid) create_player(["/casts", uuid].join("/"));

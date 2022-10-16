@@ -7,36 +7,83 @@
     <link rel="stylesheet" type="text/css" href="/assets/asciinema-player.css" />
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
     <title>COMMAND LINE INTERFACE KO</title>
-</head>
-<main class="container">
-    <div>
-        <form>
-            <div>
-                <label for="ap_theme">Theme:</label>
-                <select id="ap_theme">
-                    <option value="asciinema" selected="">asciinema</option>
-                    <option value="monokai">monokai</option>
-                    <option value="tango">tango</option>
-                    <option value="solarized-dark">solarized-dark</option>
-                    <option value="solarized-light">solarized-light</option>
-                </select>
-            </div>
-            <div>
-                <input type="checkbox" id="ap_autoplay" name="autoplay">
-                <label for="ap_autoplay">Autoplay</label>
-            </div>
-            <div>
-                <input type="checkbox" id="ap_loop" name="loop">
-                <label for="ap_loop">Loop</label>
-            </div>
-        </form>
-    </div>
-    <h1 id="title"></h1>
-    <div id="player"></div>
-</main>
+    <style>
+        header.container {
+            padding-bottom: 0px;
+            padding-top: 0px;
+        }
 
-<script src="/assets/asciinema-player.min.js"></script>
-<script src="/assets/script.js"></script>
+        #player {
+            width: 75%;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="container">
+        <nav>
+            <ul>
+                <li>
+                    <hgroup>
+                        <h1>Cliko</h1>
+                        <h2>Command Line Interface KO</h2>
+                    </hgroup>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <button class="contrast" data-target="modal-settings" onClick="toggleModal(event)">
+                        Settings
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+        <section>
+            <div id="player"></div>
+        </section>
+    </main>
+    <dialog id="modal-settings">
+        <article>
+            <a class="close" data-target="modal-settings" onClick="toggleModal(event)">
+            </a>
+            <h3>Settings</h3>
+            <form id="form-settings" data-name="asciinema" method="dialog" onsubmit="saveForm(this)">
+                <div class="grid">
+                    <fieldset>
+                        <label for="theme">Theme
+                            <select name="theme">
+                                <option value="asciinema" selected>Asciinema</option>
+                                <option value="monokai">Monokai</option>
+                                <option value="tango">Tango</option>
+                                <option value="solarized-dark">Solarized-dark</option>
+                                <option value="solarized-light">Solarized-light</option>
+                            </select>
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <label for="autoplay"><input type="checkbox" name="autoplay" value=1>Autoplay</label>
+                        <label for="loop"><input type="checkbox" name="loop" value=1>Loop</label>
+                    </fieldset>
+                </div>
+                <div>
+                    <fieldset class="grid">
+                        <label for="speed">Speed<input type="number" name="speed" value=1></label>
+                        <label for="idletimelimit">Idle time limit<input type="number" name="idletimelimit"
+                                value=2></label>
+                    </fieldset>
+                </div>
+                <footer class="grid">
+                    <button data-target="modal-settings" onclick="toggleModal(event)">Cancel</button>
+                    <button data-target="modal-settings" type="submit">Save</button>
+                </footer>
+            </form>
+        </article>
+    </dialog>
+    <script src="/assets/asciinema-player.min.js"></script>
+    <script src="/assets/script.js?version=4.1"></script>
 
 </body>
 
